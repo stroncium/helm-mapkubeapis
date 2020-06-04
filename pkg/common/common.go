@@ -70,6 +70,8 @@ func ReplaceManifestUnSupportedAPIs(origManifest, mapFile string, kubeConfig Kub
 		errors.Wrap(err, "Failed to get Kubernetes server version")
 	}
 
+	log.Printf("Kubernetes server version: '%s', parsed as %f", kubeVersionStr, kubeVersion)
+
 	// Check for deprecated or removed APIs and map accordingly to supported versions
 	for _, mapping := range mapMetadata.Mappings {
 		deprecatedAPI := mapping.DeprecatedAPI
@@ -94,7 +96,7 @@ func ReplaceManifestUnSupportedAPIs(origManifest, mapFile string, kubeConfig Kub
 		}
 		if modified {
 			if apiVersion > kubeVersion {
-				log.Printf("The following API does not required mapping now as it is not valid till Kubernetes '%s':\n\"%s\"\n", apiVersionStr,
+				log.Printf("The following API does not require mapping now as it is not valid till Kubernetes '%s'(current:'%s') :\n\"%s\"\n", apiVersionStr, kubeVersionStr,
 					deprecatedAPI)
 			} else {
 				modifiedManifest = modManifestForAPI
